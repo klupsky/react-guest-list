@@ -1,11 +1,15 @@
 import '../App.css';
-import { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 export default function Guestlist() {
+  const baseUrl = 'http://localhost:4000';
   const [guestList, setGuestList] = useState([]);
   const [firstName, setFirstName] = useState('hi');
   const [lastName, setLastName] = useState('');
-  const baseUrl = 'http://localhost:4000';
+
+  //const [loading, setLoading] = useState(true);
+
+  // create new guest
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -19,7 +23,6 @@ export default function Guestlist() {
         body: JSON.stringify({
           firstName: firstName,
           lastName: lastName,
-          attending: false,
         }),
       });
       const createdGuest = await response.json();
@@ -31,9 +34,30 @@ export default function Guestlist() {
     await newGuest();
   };
 
+  // get guest
+
+  useEffect(() => {
+    console.log('fetching guests');
+
+    async function getGuestList() {
+      const response = await fetch(`${baseUrl}/guests`);
+      const allGuests = await response.json();
+
+      setGuestList(allGuests);
+      //    setLoading(false);
+    }
+    getGuestList().catch(() => {
+      console.log('fetch failed');
+    });
+  }, []);
+
+  // get all the guests from api
+
+  // VISIBLE
+
   return (
     <div>
-      <h2>Guestlist</h2>
+      <h1>Guestlist</h1>
       <br />
       {/* INPUT */}
       <form onSubmit={(event) => handleSubmit(event)}>
@@ -62,18 +86,26 @@ export default function Guestlist() {
       </form>
       <br />
       {/* OUTPUT */}
-      <div data-test-id="guest">
-        <hr />
-        First name: firstName
-        <br />
-        Second Name: Second Name
-        <br />
-        <input type="checkbox" aria-label="Attending" />
-        not attending
-        <div>
-          <button aria-label="Remove Guest">Remove</button>
-        </div>
-        <hr />
+      <hr />
+      <div>
+        {guestList.map((guest) => {
+          return (
+            <div key={guest.id}>
+              <table>
+                <th>
+                  <span>{`${guest.firstName} ${guest.lastName}`}</span>
+                </th>
+                <th>
+                  <input type="checkbox" aria-label="Attending" />
+                </th>
+                <th>
+                  <button aria-label="Remove">Remove</button>
+                </th>
+              </table>
+              <hr />
+            </div>
+          );
+        })}
       </div>
     </div>
   );
