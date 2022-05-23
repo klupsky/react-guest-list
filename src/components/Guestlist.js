@@ -6,8 +6,25 @@ export default function Guestlist() {
   const [guestList, setGuestList] = useState([]);
   const [firstName, setFirstName] = useState('hi');
   const [lastName, setLastName] = useState('');
+  // const [refetch, setRefetch] = useState(true);
+  const [loading, setLoading] = useState(true);
 
-  //const [loading, setLoading] = useState(true);
+  // get all guests from api
+
+  useEffect(() => {
+    async function getGuestList() {
+      setLoading(true);
+      const response = await fetch(`${baseUrl}/guests`);
+      const allGuests = await response.json();
+
+      setGuestList(allGuests);
+
+      setLoading(false);
+    }
+    getGuestList().catch((error) => {
+      console.log(error);
+    });
+  }, []);
 
   // create new guest
 
@@ -34,24 +51,41 @@ export default function Guestlist() {
     await newGuest();
   };
 
-  // get guest
-
-  useEffect(() => {
-    console.log('fetching guests');
-
-    async function getGuestList() {
-      const response = await fetch(`${baseUrl}/guests`);
-      const allGuests = await response.json();
-
-      setGuestList(allGuests);
-      //    setLoading(false);
+  // delete guest from api
+  function handleDeleteGuest(id) {
+    async function deleteGuest() {
+      const response = await fetch(`${baseUrl}/guests/${id}`, {
+        method: 'DELETE',
+      });
+      const deletedGuest = await response.json();
+      console.log(deletedGuest);
     }
-    getGuestList().catch(() => {
-      console.log('fetch failed');
+    deleteGuest().catch((error) => {
+      console.log(error);
     });
-  }, []);
+    const newGuestList = guestList.filter((guest) => guest.id !== id);
+    setGuestList(newGuestList);
+  }
 
-  // get all the guests from api
+  // edit guest
+
+  async function editAttendence(id, attendance) {
+    const response = await fetch(`${baseUrl}/guests/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ attending: attendance }),
+    });
+    const updatedGuest = await response.json();
+    const newGuestList = guestList.map((guest) => {
+      if (guest.id === updatedGuest.id) {
+        return { ...guest, attending: updatedGuest.attending };
+      }
+      return guest;
+    });
+    setGuestList(newGuestList);
+  }
 
   // VISIBLE
 
@@ -87,25 +121,42 @@ export default function Guestlist() {
       <br />
       {/* OUTPUT */}
       <hr />
+
       <div>
-        {guestList.map((guest) => {
-          return (
-            <div key={guest.id}>
-              <table>
-                <th>
-                  <span>{`${guest.firstName} ${guest.lastName}`}</span>
-                </th>
-                <th>
-                  <input type="checkbox" aria-label="Attending" />
-                </th>
-                <th>
-                  <button aria-label="Remove">Remove</button>
-                </th>
-              </table>
-              <hr />
-            </div>
-          );
-        })}
+        {loading ? (
+          <h1>loading...</h1>
+        ) : (
+          <div>
+            {guestList.map((guest) => (
+              <div key={guest.id}>
+                <span>{`${guest.firstName} ${guest.lastName}`}</span>
+
+                <input
+                  type="checkbox"
+                  aria-label="Attending"
+                  checked={guest.attending}
+                  onChange={(event) => {
+                    editAttendence(guest.id, event.currentTarget.checked).catch(
+                      () => {},
+                    );
+                  }}
+                />
+                {guest.attending ? 'Attending' : 'Not attending'}
+
+                <button
+                  aria-label="Remove"
+                  onClick={() => {
+                    handleDeleteGuest(guest.id).catch(() => {});
+                  }}
+                >
+                  Remove
+                </button>
+
+                <hr />
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
