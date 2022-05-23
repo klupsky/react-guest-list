@@ -10,16 +10,17 @@ export default function Guestlist() {
   const [loading, setLoading] = useState(true);
 
   // get all guests from api
+  console.log('Loading...', loading);
 
   useEffect(() => {
     async function getGuestList() {
-      setLoading(true);
+      setLoading(false);
       const response = await fetch(`${baseUrl}/guests`);
       const allGuests = await response.json();
 
       setGuestList(allGuests);
 
-      setLoading(false);
+      setLoading(true);
     }
     getGuestList().catch((error) => {
       console.log(error);
@@ -131,7 +132,7 @@ export default function Guestlist() {
 
       <div>
         {loading ? (
-          <h1>loading...</h1>
+          'Loading...'
         ) : (
           <div>
             {guestList.map((guest) => (
