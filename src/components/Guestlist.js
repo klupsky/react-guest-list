@@ -14,13 +14,13 @@ export default function Guestlist() {
 
   useEffect(() => {
     async function getGuestList() {
-      setLoading(false);
+      setLoading(true);
       const response = await fetch(`${baseUrl}/guests`);
       const allGuests = await response.json();
 
       setGuestList(allGuests);
 
-      setLoading(true);
+      setLoading(false);
     }
     getGuestList().catch((error) => {
       console.log(error);
