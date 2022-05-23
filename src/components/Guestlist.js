@@ -122,28 +122,28 @@ export default function Guestlist() {
       {guestList.map((guest) => (
         <div data-test-id="guest" key={guest.id}>
           <span>{`${guest.firstName} ${guest.lastName}`}</span>
+          <div>
+            <input
+              type="checkbox"
+              aria-label="Attending"
+              checked={guest.attending}
+              onChange={(event) => {
+                editAttendence(guest.id, event.currentTarget.checked).catch(
+                  () => {},
+                );
+              }}
+            />
+            {guest.attending ? 'Attending' : 'Not attending'}
 
-          <input
-            type="checkbox"
-            aria-label="Attending"
-            checked={guest.attending}
-            onChange={(event) => {
-              editAttendence(guest.id, event.currentTarget.checked).catch(
-                () => {},
-              );
-            }}
-          />
-          {guest.attending ? 'Attending' : 'Not attending'}
-
-          <button
-            aria-label="Remove"
-            onClick={() => {
-              deleteGuest(guest.id).catch(() => {});
-            }}
-          >
-            Remove
-          </button>
-
+            <button
+              aria-label="Remove"
+              onClick={() => {
+                deleteGuest(guest.id).catch(() => {});
+              }}
+            >
+              Remove
+            </button>
+          </div>
           <hr />
         </div>
       ))}
