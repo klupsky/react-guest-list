@@ -120,7 +120,7 @@ export default function Guestlist() {
       {loading ? 'Loading...' : ''}
 
       {guestList.map((guest) => (
-        <div key={guest.id}>
+        <div data-test-id="guest" key={guest.id}>
           <span>{`${guest.firstName} ${guest.lastName}`}</span>
 
           <input
