@@ -14,7 +14,6 @@ export default function Guestlist() {
 
   useEffect(() => {
     async function getGuestList() {
-
       const response = await fetch(`${baseUrl}/guests`);
       const allGuests = await response.json();
 
@@ -43,28 +42,24 @@ export default function Guestlist() {
         }),
       });
       const createdGuest = await response.json();
-      console.log(createdGuest);
       setFirstName('');
       setLastName('');
       setGuestList([...guestList, createdGuest]);
     }
+
     await newGuest();
   };
 
   // delete guest from api
 
-  function handleDeleteGuest(id) {
-    async function deleteGuest() {
-      const response = await fetch(`${baseUrl}/guests/${id}`, {
-        method: 'DELETE',
-      });
-      const deletedGuest = await response.json();
-      console.log(deletedGuest);
-    }
-    deleteGuest().catch((error) => {
-      console.log(error);
+  async function deleteGuest(id) {
+    const response = await fetch(`${baseUrl}/guests/${id}`, {
+      method: 'DELETE',
     });
-    const newGuestList = guestList.filter((guest) => guest.id !== id);
+    const deletedGuest = await response.json();
+    const newGuestList = guestList.filter((guest) => {
+      return guest.id !== deletedGuest.id;
+    });
     setGuestList(newGuestList);
   }
 
@@ -99,29 +94,23 @@ export default function Guestlist() {
 
       <form onSubmit={(event) => handleSubmit(event)}>
         <h2>Input Guests Below</h2>
-        <div>
-          <label label="First name">
-            First name:
-            <input
-              disabled={loading ? 'disabled' : ''}
-              value={firstName}
-              onChange={(event) => setFirstName(event.target.value)}
-            />
-          </label>
-        </div>
-        <div>
-          <label label="Last name">
-            Last name:
-            <input
-              disabled={loading ? 'disabled' : ''}
-              value={lastName}
-              onChange={(event) => setLastName(event.target.value)}
-            />
-          </label>
-        </div>
-        <div>
-          <button aria-label="Add Guest">Add Guest</button>
-        </div>
+        <label label="First name">
+          First name:
+          <input
+            value={firstName}
+            onChange={(event) => setFirstName(event.currentTarget.value)}
+            disabled={loading ? 'disabled' : ''}
+          />
+        </label>
+        <label label="Last name">
+          Last name:
+          <input
+            value={lastName}
+            onChange={(event) => setLastName(event.currentTarget.value)}
+            disabled={loading ? 'disabled' : ''}
+          />
+        </label>
+        <button>Add guest</button>
       </form>
       <br />
 
@@ -129,45 +118,36 @@ export default function Guestlist() {
 
       <hr />
 
-      {/* <div>
-        {loading ? (
-          'Loading...'
-        ) : ( */}
+      {loading ? 'Loading...' : ''}
 
-          <div>
-          {loading ? 'Loading...' : ''}
+      {guestList.map((guest) => (
+        <div key={guest.id}>
+          <span>{`${guest.firstName} ${guest.lastName}`}</span>
 
-            {guestList.map((guest) => (
-              <div key={guest.id}>
-                <span>{`${guest.firstName} ${guest.lastName}`}</span>
+          <input
+            type="checkbox"
+            aria-label="Attending"
+            checked={guest.attending}
+            onChange={(event) => {
+              editAttendence(guest.id, event.currentTarget.checked).catch(
+                () => {},
+              );
+            }}
+          />
+          {guest.attending ? 'Attending' : 'Not attending'}
 
-                <input
-                  type="checkbox"
-                  aria-label="Attending"
-                  checked={guest.attending}
-                  onChange={(event) => {
-                    editAttendence(guest.id, event.currentTarget.checked).catch(
-                      () => {},
-                    );
-                  }}
-                />
-                {guest.attending ? 'Attending' : 'Not attending'}
+          <button
+            aria-label="Remove"
+            onClick={() => {
+              deleteGuest(guest.id).catch(() => {});
+            }}
+          >
+            Remove
+          </button>
 
-                <button
-                  aria-label="Remove"
-                  onClick={() => {
-                    handleDeleteGuest(guest.id).catch(() => {});
-                  }}
-                >
-                  Remove
-                </button>
-
-                <hr />
-              </div>
-            ))}
-          </div>
-        {/* )} */}
-      </div>
+          <hr />
+        </div>
+      ))}
     </div>
   );
 }
