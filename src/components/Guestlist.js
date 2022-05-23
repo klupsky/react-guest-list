@@ -52,6 +52,7 @@ export default function Guestlist() {
   };
 
   // delete guest from api
+
   function handleDeleteGuest(id) {
     async function deleteGuest() {
       const response = await fetch(`${baseUrl}/guests/${id}`, {
@@ -93,13 +94,16 @@ export default function Guestlist() {
     <div>
       <h1>Guestlist</h1>
       <br />
+
       {/* INPUT */}
+
       <form onSubmit={(event) => handleSubmit(event)}>
         <h2>Input Guests Below</h2>
         <div>
           <label label="First name">
             First name:
             <input
+              disabled={loading ? true : false}
               value={firstName}
               onChange={(event) => setFirstName(event.target.value)}
             />
@@ -109,6 +113,7 @@ export default function Guestlist() {
           <label label="Last name">
             Last name:
             <input
+              disabled={loading ? true : false}
               value={lastName}
               onChange={(event) => setLastName(event.target.value)}
             />
@@ -119,7 +124,9 @@ export default function Guestlist() {
         </div>
       </form>
       <br />
+
       {/* OUTPUT */}
+
       <hr />
 
       <div>
