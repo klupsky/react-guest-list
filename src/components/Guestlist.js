@@ -10,16 +10,15 @@ export default function Guestlist() {
   const [loading, setLoading] = useState(true);
 
   // get all guests from api
-  console.log('Loading...', loading);
+  // console.log('Loading...', loading);
 
   useEffect(() => {
     async function getGuestList() {
-      setLoading(true);
+
       const response = await fetch(`${baseUrl}/guests`);
       const allGuests = await response.json();
 
       setGuestList(allGuests);
-
       setLoading(false);
     }
     getGuestList().catch((error) => {
@@ -104,7 +103,7 @@ export default function Guestlist() {
           <label label="First name">
             First name:
             <input
-              disabled={loading ? true : false}
+              disabled={loading ? 'disabled' : ''}
               value={firstName}
               onChange={(event) => setFirstName(event.target.value)}
             />
@@ -114,7 +113,7 @@ export default function Guestlist() {
           <label label="Last name">
             Last name:
             <input
-              disabled={loading ? true : false}
+              disabled={loading ? 'disabled' : ''}
               value={lastName}
               onChange={(event) => setLastName(event.target.value)}
             />
@@ -130,11 +129,14 @@ export default function Guestlist() {
 
       <hr />
 
-      <div>
+      {/* <div>
         {loading ? (
           'Loading...'
-        ) : (
+        ) : ( */}
+
           <div>
+          {loading ? 'Loading...' : ''}
+
             {guestList.map((guest) => (
               <div key={guest.id}>
                 <span>{`${guest.firstName} ${guest.lastName}`}</span>
@@ -164,7 +166,7 @@ export default function Guestlist() {
               </div>
             ))}
           </div>
-        )}
+        {/* )} */}
       </div>
     </div>
   );
