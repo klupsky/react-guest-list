@@ -2,7 +2,7 @@ import '../App.css';
 import React, { useEffect, useState } from 'react';
 
 export default function Guestlist() {
-  const baseUrl = 'http://localhost:4000';
+  const baseUrl = 'http://react-guestlist-kc.herokuapp.com';
   const [guestList, setGuestList] = useState([]);
   const [firstName, setFirstName] = useState('hi');
   const [lastName, setLastName] = useState('');
