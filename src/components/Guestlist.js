@@ -88,9 +88,7 @@ export default function Guestlist() {
       <br />
       <br />
       <br />
-
       {/* INPUT */}
-
       <form onSubmit={(event) => handleSubmit(event)}>
         <div>Add a new guest to the list:</div>
         <label label="First name">
@@ -112,14 +110,10 @@ export default function Guestlist() {
         </label>
         <button>Add guest</button>
       </form>
-      <br />
-
+      <br /> <br /> <br />
       {/* OUTPUT */}
-
       <hr />
-
-      {loading ? 'Loading...' : ''}
-
+      {loading ? <h1>'Loading...'</h1> : ''}
       {guestList.map((guest) => (
         <div class="guest" data-test-id="guest" key={guest.id}>
           <span>{`${guest.firstName} ${guest.lastName}`}</span>
