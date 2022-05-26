@@ -6,11 +6,9 @@ export default function Guestlist() {
   const [guestList, setGuestList] = useState([]);
   const [firstName, setFirstName] = useState('hi');
   const [lastName, setLastName] = useState('');
-  // const [refetch, setRefetch] = useState(true);
   const [loading, setLoading] = useState(true);
 
   // get all guests from api
-  // console.log('Loading...', loading);
 
   useEffect(() => {
     async function getGuestList() {
@@ -88,12 +86,15 @@ export default function Guestlist() {
     <div>
       <h1>Guestlist</h1>
       <br />
+      <br />
+      <br />
 
       {/* INPUT */}
 
       <form onSubmit={(event) => handleSubmit(event)}>
-        <h2>Input Guests Below</h2>
+        <div>Add a new guest to the list:</div>
         <label label="First name">
+          <br />
           First name:
           <input
             value={firstName}
@@ -120,11 +121,12 @@ export default function Guestlist() {
       {loading ? 'Loading...' : ''}
 
       {guestList.map((guest) => (
-        <div data-test-id="guest" key={guest.id}>
+        <div class="guest" data-test-id="guest" key={guest.id}>
           <span>{`${guest.firstName} ${guest.lastName}`}</span>
           <div>
             <input
               type="checkbox"
+              class="checkbox"
               aria-label="Attending"
               checked={guest.attending}
               onChange={(event) => {
@@ -136,6 +138,7 @@ export default function Guestlist() {
             {guest.attending ? 'Attending' : 'Not attending'}
 
             <button
+              class="remove"
               aria-label="Remove"
               onClick={() => {
                 deleteGuest(guest.id).catch(() => {});
