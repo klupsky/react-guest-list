@@ -1,5 +1,5 @@
 import './App.css';
-import Guestlist from './components/Guestlist';
+import Guestlist from './components/guestList';
 
 export default function App() {
   return (

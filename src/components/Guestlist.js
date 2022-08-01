@@ -98,6 +98,7 @@ export default function Guestlist() {
             value={firstName}
             onChange={(event) => setFirstName(event.currentTarget.value)}
             disabled={loading ? true : false}
+            required
           />
         </label>
         <label label="Last name">
@@ -106,6 +107,7 @@ export default function Guestlist() {
             value={lastName}
             onChange={(event) => setLastName(event.currentTarget.value)}
             disabled={loading ? true : false}
+            required
           />
         </label>
         <button>Add guest</button>
